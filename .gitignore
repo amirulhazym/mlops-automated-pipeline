@@ -1,0 +1,33 @@
+# Virtual Environment
+p2env/
+venv/
+*.venv
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# IDE specific
+.vscode/
+.idea/
+
+# Data files that will be tracked by DVC
+# Example: data/raw/*.csv
+# Example: data/processed/*.parquet
+# We'll let DVC manage .gitignore entries for specific data files it tracks.
+
+# MLflow local data (if used at this stage, though more for L2)
+mlruns/
+
+# DVC local cache and temp files (DVC will add more specific ones)
+.dvc/cache
+.dvc/tmp
+.dvc/local
