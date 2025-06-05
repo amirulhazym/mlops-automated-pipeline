@@ -31,3 +31,6 @@ mlruns/
 .dvc/cache
 .dvc/tmp
 .dvc/local
+
+#RAW Data
+data/raw_data/
