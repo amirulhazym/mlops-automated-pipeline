@@ -20,8 +20,8 @@ Thumbs.db
 .idea/
 
 # Data files that will be tracked by DVC
-# Example: data/raw/*.csv
-# Example: data/processed/*.parquet
+data/raw/*.csv
+data/processed/
 # We'll let DVC manage .gitignore entries for specific data files it tracks.
 
 # MLflow local data (if used at this stage, though more for L2)
