@@ -20,9 +20,14 @@ Thumbs.db
 .idea/
 
 # Data files that will be tracked by DVC
-data/raw/*.csv
-data/processed/
+data/raw_data/*.csv
+data/processed/*
+# Ignore all content inside data/processed, but keep the directory
 # We'll let DVC manage .gitignore entries for specific data files it tracks.
+
+# EXCEPT, do NOT ignore .dvc files or .gitkeep files inside it
+!data/processed/*.dvc
+!data/processed/.gitkeep
 
 # MLflow local data (if used at this stage, though more for L2)
 mlruns/
