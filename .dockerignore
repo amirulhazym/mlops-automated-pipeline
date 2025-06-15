@@ -1,0 +1,38 @@
+# .dockerignore
+# This file tells Docker which files and directories to EXCLUDE from the
+# build context when creating an image. This keeps the image smaller,
+# builds faster, and prevents sensitive information from being copied.
+
+# --- Version Control ---
+.git
+.gitignore
+.dvc/ # Ignore the entire DVC metadata directory; it's not needed inside the image.
+
+# --- Python Environment & Caches ---
+p2env/
+venv/
+*.venv
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+
+# --- Local Data & Artifacts ---
+# These are handled by DVC or are temporary. They should NOT be copied into the image.
+data/
+mlruns/
+notebooks/ # Notebooks are for analysis, not part of the training application.
+*.log
+*.tmp
+*.swp
+temp_reqs.txt # Any temporary files
+
+# --- Test Reports ---
+htmlcov/
+*.coverage
+
+# --- IDE & OS Specific ---
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

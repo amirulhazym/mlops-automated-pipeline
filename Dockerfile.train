@@ -1,0 +1,55 @@
+# Dockerfile.train (Revised and Finalized)
+
+# --- Stage 1: Base Image and System Dependencies ---
+# Using python:3.11-slim as it's a good balance of size and features.
+FROM python:3.11-slim
+
+# Set environment variables for non-interactive installs and to ensure Python outputs logs immediately.
+ENV PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=off \
+    PIP_DISABLE_PIP_VERSION_CHECK=on \
+    DEBIAN_FRONTEND=noninteractive
+
+# What's Happening: Install system-level dependencies.
+# Why: Our application needs Java for Spark to run, and Git for potential MLflow/DVC operations.
+# We run `apt-get clean` and remove lists to keep the final image layer smaller.
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    openjdk-17-jdk-headless \
+    git \
+    && apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# What's Happening: Set the JAVA_HOME environment variable inside the container.
+# Why: This explicitly tells Spark and other Java-based tools where to find the Java installation.
+# This path is the standard location for openjdk-11-jdk on Debian-based images like python:3.11-slim.
+ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+
+# --- Stage 2: Python Dependencies and Application Code ---
+
+# What's Happening: Set the default working directory inside the container.
+# Why: This is where all subsequent commands (like COPY and RUN) will be executed.
+WORKDIR /app
+
+# What's Happening: Copy only the requirements file first.
+# Why (CRITICAL OPTIMIZATION): Docker builds in layers. If we only copy the requirements file
+# and install dependencies, Docker will cache this layer. Later, if we only change our application
+# code (in src/) but not the requirements, Docker can reuse this expensive, slow `pip install`
+# layer from the cache, making subsequent builds much faster.
+COPY requirements.txt .
+
+# What's Happening: Install the core application Python dependencies.
+# Why: This installs all the libraries needed to run our training and data processing scripts,
+# such as pyspark, mlflow, xgboost, and tensorflow.
+RUN pip install --no-cache-dir -r requirements.txt
+
+# What's Happening: Copy the rest of our application's source code.
+# Why: Now that dependencies are installed, we copy the code that will use them.
+COPY src/ /app/src/
+COPY scripts/ /app/scripts/
+
+# What's Happening: Default command to run when the container starts.
+# Why: This is commented out because this image is intended as a "training environment."
+# We will tell it what command to run (e.g., `pytest` or `python src/training/train_model.py`)
+# from the outside, for example, in our GitHub Actions workflow. This makes the image more flexible.
+# CMD ["python", "src/training/train_model.py"]
