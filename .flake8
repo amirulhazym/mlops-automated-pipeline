@@ -1,0 +1,17 @@
+# This is the configuration file for the flake8 code quality tool.
+# It allows us to customize the rules for our project.
+
+[flake8]
+
+# Rule: Set the maximum length of a line of code.
+# Why: PEP 8 suggests 79 characters, which is very short for modern screens.
+# 120 is a common, more practical standard.
+max-line-length = 120
+
+# Rule: Ignore specific error codes.
+# Why: Sometimes, a rule is not helpful or clashes with other tools.
+# We list the specific error codes we want flake8 to ignore.
+ignore = E203, E501, W503
+# E203: Whitespace before ':' (often clashes with the Black code formatter)
+# E501: Line too long (we control this with max-line-length instead)
+# W503: Line break before binary operator (an old rule; now breaks are preferred after)

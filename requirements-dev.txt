@@ -11,8 +11,8 @@ openpyxl==3.1.5       # For pandas to read/write modern Excel files
 xlrd==2.0.1           # For pandas to read legacy Excel files
 
 # --- Code Quality & Testing ---
-pytest==8.3.2
-flake8==7.1.0
+pytest==8.4.0
+flake8==7.2.0
 
 # --- Model Monitoring (for P2L6) ---
 evidently==0.4.24
