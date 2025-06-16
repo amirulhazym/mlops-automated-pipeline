@@ -8,6 +8,10 @@ on:
     branches: [ main ]         # Triggers on pull requests targeting the main branch
   workflow_dispatch:           # Allows you to run this workflow manually from the Actions tab
 
+permissions:
+  id-token: write # Required to get an OIDC token for AWS authentication
+  contents: read  # Required for actions/checkout to read our repo
+
 jobs:
   lint-and-test:
     name: Lint & Unit Test
@@ -60,3 +64,36 @@ jobs:
         run: |
           # This step is just for verification in the CI logs.
           docker images p2_training_env
+
+  deploy-p1-api:
+    name: Deploy P1 API to AWS
+    runs-on: ubuntu-latest
+    needs: [lint-and-test] # This job depends on the lint & test job passing.
+    
+    # This condition ensures deployment only happens on a push to the 'main' branch.
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials via OIDC
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          # Paste the full ARN of the IAM Role you created in Step 4.2
+          role-to-assume: arn:aws:iam::345594585491:role/GitHubActions-P2-SAM-DeployRole
+          aws-region: ap-southeast-5 # My AWS region, change if needed
+
+      - name: Setup SAM CLI
+        uses: aws-actions/setup-sam@v2
+
+      - name: SAM Deploy P1 API
+        # This single command now handles everything: it builds the Docker image,
+        # pushes it to a managed ECR repository, and deploys the CloudFormation stack.
+        run: |
+          sam deploy \
+            --template-file src/p1_api_deployment/fraud_api_lambda/template.yaml \
+            --stack-name p1-fraud-api-stack-via-gha \
+            --capabilities CAPABILITY_IAM \
+            --resolve-image-repos \
+            --no-confirm

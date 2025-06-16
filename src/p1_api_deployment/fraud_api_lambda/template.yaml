@@ -1,0 +1,57 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  Project 1: Real-time Fraud Detection API (Lambda/APIGW via SAM)
+  Deploys the FastAPI application for fraud prediction using AWS Lambda
+  and API Gateway HTTP API, configured for zero-cost target via free tiers.
+
+Globals:
+  Function:
+    Timeout: 30 # Default function timeout in seconds
+    MemorySize: 512 # Default memory in MB - good starting point for ML models
+
+Resources:
+  FraudApiFunction:
+    Type: AWS::Serverless::Function # Defines the Lambda function
+    Properties:
+      PackageType: Image # Deploy Lambda function as a container image
+      # IMPORTANT: Path relative to this template.yaml file to your code folder
+      # CodeUri: fraud_api_lambda/
+      # ImageUri: 345594585491.dkr.ecr.ap-southeast-5.amazonaws.com/fraud-api-repo@sha256:ca40a625246ca3fab36c03ceff91f4b5cb9fa806a0bd30b5d842626a62d9e5e9 # ECR image URI
+      # IMPORTANT: Entry point: filename.handler_object (api.py -> handler = Mangum(app))
+      # Handler: api.handler
+      # Runtime: python3.11 # Specify the Python runtime
+      Architectures:
+        - x86_64 # Specify the CPU architecture
+      # MemorySize: 512 # Memory size in MB
+      # Timeout: 30 # Function timeout in seconds
+      # Environment: # Example - uncomment and use if your api.py needs env vars
+      #   Variables:
+      #     LOG_LEVEL: INFO # Example environment variable
+      # Policies:
+        # - S3ReadPolicy:
+            # Check Bucket name !!!
+            # BucketName: "aws-sam-cli-managed-default-samclisourcebucket-3ojbej2lkkdk" 
+      Events:
+        ApiEvent: # This creates the API Gateway trigger
+          Type: HttpApi # Use the newer, simpler, cheaper HTTP API type
+          Properties:
+            Path: /{proxy+} # Forward all paths under the base URL to FastAPI
+            Method: ANY # Allow any HTTP method (GET, POST, etc.)
+            PayloadFormatVersion: '2.0' # Recommended for HTTP API + Lambda Proxy
+          # --- P1: ADD Metadata section to specify Docker build info ---
+          # Metadata:
+            # DockerTag: python3.11-v1 # Tag for the image SAM builds
+            # Dockerfile: Dockerfile   # Name of the Dockerfile inside the code directory
+            # DockerContext: ./fraud_api_lambda/ # Build context for Docker (where Dockerfile and code reside)
+          # --- P2: Add Metadata section to tell SAM to build DOcker image automatically ---
+    Metadata:
+      DockerTag: p1-fraud-api-v1  # A tag for the image SAM builds
+      Dockerfile: Dockerfile      # The name of the Dockerfile inside the context directory
+      DockerContext: ./fraud_api_lambda # The build context for Docker (where the Dockerfile is)
+
+Outputs:
+  FraudApiEndpoint:
+    Description: "API Gateway endpoint URL for Fraud Detection API"
+    # Constructs the URL dynamically after deployment
+    Value: !Sub "https://${ServerlessHttpApi}.execute-api.${AWS::Region}.amazonaws.com/"
