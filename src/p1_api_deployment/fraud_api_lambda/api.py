@@ -2,8 +2,9 @@ import joblib
 import pandas as pd
 import traceback
 import boto3
+import os
 
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from mangum import Mangum
 from pydantic import BaseModel, Field
 
