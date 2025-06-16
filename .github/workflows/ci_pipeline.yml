@@ -96,4 +96,4 @@ jobs:
             --stack-name p1-fraud-api-stack-via-gha \
             --capabilities CAPABILITY_IAM \
             --resolve-image-repos \
-            --no-confirm
+            --no-confirm-changeset
