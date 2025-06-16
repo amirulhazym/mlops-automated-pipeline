@@ -1,9 +1,8 @@
 # tests/test_training.py
-import pytest # We need to import pytest to use its features, like fixtures
-
 # To test our script, we need to import the function we want to test
 # This line imports the `setup_arg_parser` function from our main training script
 from src.training.train_model import setup_arg_parser
+
 
 # --- Test Case 1: Checking Default Arguments ---
 def test_arg_parser_defaults():
@@ -22,7 +21,7 @@ def test_arg_parser_defaults():
     # If any of these `assert` statements are false, the test will fail.
     assert args.data_version == "sample_1000000"
     assert args.model_type == "xgboost"
-    assert args.learning_rate == 0.001 # This default comes from the latest script
+    assert args.learning_rate == 0.001  # This default comes from the latest script
     assert args.n_estimators == 100
     assert args.epochs == 10
     assert args.random_state == 50
@@ -36,22 +35,28 @@ def test_arg_parser_xgboost_custom():
     """
     # Arrange: We define a list of strings that mimics command-line input.
     custom_args_list = [
-        "--model_type", "xgboost",
-        "--data_version", "full",
-        "--run_name", "my_custom_xgb_run",
-        "--n_estimators", "200"
+        "--model_type",
+        "xgboost",
+        "--data_version",
+        "full",
+        "--run_name",
+        "my_custom_xgb_run",
+        "--n_estimators",
+        "200",
     ]
 
     # Arrange: We create an instance of our argument parser
     parser = setup_arg_parser()
-    
+
     # Act: We parse our custom list of arguments.
     args = parser.parse_args(custom_args_list)
 
     # Assert: We check if the arguments were correctly parsed.
     assert args.model_type == "xgboost"
     assert args.data_version == "full"
-    assert args.run_name == "my_custom_xgb_run" # The parses's desfault is None, so we expect it to be None
+    assert (
+        args.run_name == "my_custom_xgb_run"
+    )  # The parses's desfault is None, so we expect it to be None
     assert args.n_estimators == 200
 
 
@@ -63,11 +68,16 @@ def test_arg_parser_tensorflow_custom():
     """
     # Arrange: We define a list of strings for a TensorFlow scenario.
     custom_args_list = [
-        "--model_type", "tensorflow_mlp",
-        "--data_version", "full",
-        "--run_name", "my_custom_tf_run",
-        "--epochs", "20",
-        "--batch_size", "128"
+        "--model_type",
+        "tensorflow_mlp",
+        "--data_version",
+        "full",
+        "--run_name",
+        "my_custom_tf_run",
+        "--epochs",
+        "20",
+        "--batch_size",
+        "128",
     ]
 
     # Arrange: We create an instance of our argument parser
@@ -79,6 +89,8 @@ def test_arg_parser_tensorflow_custom():
     # Assert: We check the parsed arguments.
     assert args.model_type == "tensorflow_mlp"
     assert args.data_version == "full"
-    assert args.run_name == "my_custom_tf_run"  # The parser's default is None, so we expect it to be None
+    assert (
+        args.run_name == "my_custom_tf_run"
+    )  # The parser's default is None, so we expect it to be None
     assert args.epochs == 20
     assert args.batch_size == 128
