@@ -91,15 +91,14 @@ jobs:
       # --- STEP 1: BUILD THE ARTIFACTS ---
       - name: SAM Build P1 API
         run: |
-          # This command builds the Docker image locally on the runner
-          # and prepares the deployment artifacts in the .aws-sam/build directory.
-          sam build --template-file src/p1_api_deployment/fraud_api_lambda/template.yaml
+          # The --template flag points to the correct location of our template file.
+          sam build --template src/p1_api_deployment/template.yaml
 
       # --- STEP 2: DEPLOY THE BUILT ARTIFACTS ---
       - name: SAM Deploy P1 API
         run: |
-          # This command takes the artifacts created by `sam build` and deploys them.
-          # The --resolve-image-repos flag tells it to push the built image to ECR.
+          # This command deploys the artifacts created by the `sam build` step above.
+          # It automatically finds the built template in the default .aws-sam/build directory.
           sam deploy \
             --stack-name p1-fraud-api-stack-via-gha \
             --capabilities CAPABILITY_IAM \
