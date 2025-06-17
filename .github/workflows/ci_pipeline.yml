@@ -91,16 +91,17 @@ jobs:
       # --- STEP 1: BUILD THE ARTIFACTS ---
       - name: SAM Build P1 API
         run: |
-          # The --template flag points to the correct location of our template file.
+          # We explicitly point to the template file. SAM will build the Docker image
+          # and place the build artifacts in the default .aws-sam/build directory.
           sam build --template src/p1_api_deployment/template.yaml
 
       # --- STEP 2: DEPLOY THE BUILT ARTIFACTS ---
       - name: SAM Deploy P1 API
         run: |
-          # This command deploys the artifacts created by the `sam build` step above.
-          # It automatically finds the built template in the default .aws-sam/build directory.
+          # This command deploys the artifacts created by the `sam build` step.
           sam deploy \
             --stack-name p1-fraud-api-stack-via-gha \
             --capabilities CAPABILITY_IAM \
             --resolve-image-repos \
+            --resolve-s3 \
             --no-confirm-changeset
