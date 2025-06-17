@@ -93,7 +93,7 @@ jobs:
         run: |
           # This command builds the Docker image locally on the runner
           # and prepares the deployment artifacts in the .aws-sam/build directory.
-          sam build --template-file src/p1_api_deployment/template.yaml
+          sam build --template-file src/p1_api_deployment/fraud_api_lambda/template.yaml
 
       # --- STEP 2: DEPLOY THE BUILT ARTIFACTS ---
       - name: SAM Deploy P1 API
