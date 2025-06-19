@@ -1,0 +1,21 @@
+# File: k8s/p1_api_deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: p1-fraud-api-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: p1-fraud-api
+  template:
+    metadata:
+      labels:
+        app: p1-fraud-api
+    spec:
+      containers:
+      - name: p1-fraud-api-container
+        image: p1-fraud-api:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8000
