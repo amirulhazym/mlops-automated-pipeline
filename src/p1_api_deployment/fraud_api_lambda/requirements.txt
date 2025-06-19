@@ -3,6 +3,10 @@ fastapi==0.115.12
 mangum==0.17.0      # Stable version often used with Lambda, verify compatibility if issues arise
 pydantic==2.11.0    # Pinning FastAPI/Pydantic versions together is good practice
 
+# uvicorn 
+uvicorn==0.34.2
+python-multipart # For handling multipart/form-data requests
+
 # Model Loading
 joblib==1.4.2
 

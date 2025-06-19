@@ -20,4 +20,4 @@ EXPOSE 8000
 
 # The command to run when the container starts.
 # This starts the Uvicorn web server to serve our FastAPI application.
-CMD ["uvicorn", "api:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["python", "-m", "uvicorn", "api:app", "--host", "0.0.0.0", "--port", "8000"]
