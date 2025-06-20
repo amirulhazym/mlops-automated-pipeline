@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: p1-fraud-api-container
-        image: p1-fraud-api:v5
+        image: p1-fraud-api:v6
         imagePullPolicy: IfNotPresent
         resources:
           requests:
