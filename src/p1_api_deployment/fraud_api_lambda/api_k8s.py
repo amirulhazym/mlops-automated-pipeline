@@ -30,7 +30,7 @@ try:
         except (AttributeError, IndexError):
             print("Could not automatically determine features. Using manual fallback.")
             expected_features_in = ['step', 'amount', 'oldbalanceOrg', 'newbalanceOrig', 'oldbalanceDest', 'newbalanceDest', 'type_CASH_OUT', 'type_DEBIT', 'type_PAYMENT', 'type_TRANSFER', 'amt_ratio_orig']
-    
+
     else:
         print(f"ERROR: Model file not found at path: {MODEL_PATH}")
 
