@@ -11,7 +11,7 @@ from pydantic import BaseModel, Field
 pipeline = None
 expected_features_in = []
 
-MODEL_PATH = "best_fraud_pipeline.joblib" 
+MODEL_PATH = "best_fraud_pipeline.joblib"
 
 try:
     print(f"Attempting to load model from local path: {MODEL_PATH}")
