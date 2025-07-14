@@ -1,6 +1,7 @@
 # Virtual Environment
 p2env/
 venv/
+p2env2/
 *.venv
 
 # Python cache

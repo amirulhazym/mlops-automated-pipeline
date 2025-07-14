@@ -1,4 +1,4 @@
-# scripts/generate_evidently_reports.py (Final, Corrected, and Professional Version)
+# scripts/generate_evidently_reports.py
 
 import os
 import pandas as pd
@@ -12,10 +12,8 @@ from evidently.metric_preset import DataDriftPreset, ClassificationPreset
 from evidently.pipeline.column_mapping import ColumnMapping
 
 # --- Configuration ---
-# This section contains all the user-configurable settings for the script.
-
 # 1. MLflow Configuration:
-MLFLOW_RUN_ID = "00b7510a863e47e88ad4a63a9297e6b2" # Your champion XGBoost run ID
+MLFLOW_RUN_ID = "00b7510a863e47e88ad4a63a9297e6b2" # Get this from "mlflow ui"
 MODEL_ARTIFACT_PATH = "xgboost-model"                # The artifact path from the MLflow UI
 
 # 2. Path Configuration:
@@ -24,7 +22,7 @@ REPORT_OUTPUT_DIR = "docs/evidently_reports"                  # Directory to sav
 
 # 3. Script Configuration:
 TARGET_COLUMN = 'isFraud'
-RANDOM_STATE = 50 # Must match the state used in your training script
+RANDOM_STATE = 50 # Must match with random state used in training script
 
 # --- Script Setup ---
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -74,7 +72,7 @@ def main():
     current_data[TARGET_COLUMN] = y_test
     
     # --- Generate Data Drift Report ---
-    # This report only needs the features and the true target. It does not need predictions.
+    # This report only needs the features and the true target. does not need predictions.
     logging.info("Generating Data Drift report...")
     data_drift_report = Report(metrics=[DataDriftPreset()])
     # The .run() method calculates the metrics
