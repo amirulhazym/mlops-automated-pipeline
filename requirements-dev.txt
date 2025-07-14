@@ -15,4 +15,4 @@ pytest==8.4.0
 flake8==7.2.0
 
 # --- Model Monitoring (for P2L6) ---
-evidently==0.4.24
+evidently  # For generating data and model performance reports
