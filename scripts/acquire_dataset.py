@@ -1,11 +1,10 @@
 # scripts/acquire_dataset.py
 
-
 import pandas as pd
 import os
 import logging
 import sys
-import argparse # What it does: Python's standard library for parsing command-line arguments.
+import argparse # for parsing command-line arguments.
 
 
 # --- Dependency Check ---
@@ -50,7 +49,7 @@ def acquire_dataset(sample_size):
     
     # --- Dynamic Filename ---
     # What it does: Creates a different filename depending on whether we're saving a sample or the full dataset.
-    # Why it's here (The Rationale): Prevents accidentally overwriting the full dataset with a sample,
+    # Why it's here: Prevents accidentally overwriting the full dataset with a sample,
     # and makes it clear which file is which.
     if sample_size:
         output_filename = f"sampled_fraud_data_{sample_size}.csv"
@@ -76,13 +75,13 @@ def acquire_dataset(sample_size):
         if sample_size:
             logging.info(f"Creating a random sample of {sample_size:,} rows...")
             # What it does: Checks if the requested sample size is valid.
-            # Why it's here (The Rationale): Robust error handling for user input.
+            # Why it's here: Robust error handling for user input.
             if len(df_full) < sample_size:
                 logging.warning(f"Full dataset size ({len(df_full)}) is smaller than requested sample size ({sample_size}). Using full dataset for sampling.")
                 df_to_save = df_full.copy()
             else:
-                # Implementation Detail: `random_state` ensures that if you ask for the same sample size
-                # multiple times, you get the exact same random sample. This is key for reproducibility.
+                # `random_state` ensures that if we ask for the same sample size
+                # multiple times, we get the exact same random sample. for reproducibility.
                 df_to_save = df_full.sample(n=sample_size, random_state=50).copy()
         else:
             logging.info("No sample size provided. Preparing to save the full dataset.")

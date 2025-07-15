@@ -13,5 +13,5 @@ RUN pip install --no-cache-dir -r ${LAMBDA_TASK_ROOT}/requirements.txt
 COPY api.py ${LAMBDA_TASK_ROOT}/
 
 # Set the command that Lambda will invoke
-# This should be the <filename>.<handler_variable_name> from your template's original Handler property
+# This should be the <filename>.<handler_variable_name> from template's original Handler property
 CMD [ "api.handler" ]

@@ -2,10 +2,10 @@ import joblib
 import pandas as pd
 import traceback
 import os
-
 from fastapi import FastAPI, HTTPException
 from mangum import Mangum
 from pydantic import BaseModel, Field
+from prometheus_fastapi_instrumentator import Instrumentator
 
 # --- Model Loading ---
 pipeline = None
@@ -38,7 +38,7 @@ except Exception as e:
     print(f"An unexpected error occurred during model loading: {e}")
     traceback.print_exc()
 
-
+# --- Pydantic Model for Input Validation ---
 class TransactionFeatures(BaseModel):
     step: int
     amount: float
@@ -114,7 +114,6 @@ async def predict_fraud(features: TransactionFeatures):
         raise HTTPException(status_code=500, detail=f"Internal Server Error during prediction: {str(e)}")
 
 # Instrumentation for Prometheus monitoring
-from prometheus_fastapi_instrumentator import Instrumentator
 Instrumentator().instrument(app).expose(app)
 print("Prometheus instrumentator exposed on /metrics endpoint.")
 

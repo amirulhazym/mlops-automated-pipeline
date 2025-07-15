@@ -1,7 +1,5 @@
 # File: test_evidently_save.py
 # A minimal script to test the core functionality of the Evidently library.
-
-import pandas as pd
 from sklearn import datasets
 import sys
 
@@ -45,6 +43,6 @@ except AttributeError:
     print("This confirms a library installation or version conflict issue.")
     print("-------------------\n")
 except Exception as e:
-    print(f"\n--- TEST FAILED ---")
+    print("\n--- TEST FAILED ---")
     print(f"An unexpected error occurred during save: {e}")
     print("-------------------\n")
