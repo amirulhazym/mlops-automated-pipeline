@@ -93,8 +93,8 @@ jobs:
         run: |
           # We explicitly point to the template file. SAM will build the Docker image
           # and place the build artifacts in the default .aws-sam/build directory.
-          sam build 
-            --template src/p1_api_deployment/template.yaml
+          sam build \
+            --template src/p1_api_deployment/template.yaml \
             --use-container \
             --cached \
             --build-dir .aws-sam/build
