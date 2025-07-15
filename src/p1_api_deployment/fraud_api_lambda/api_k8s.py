@@ -113,6 +113,10 @@ async def predict_fraud(features: TransactionFeatures):
         traceback.print_exc()
         raise HTTPException(status_code=500, detail=f"Internal Server Error during prediction: {str(e)}")
 
+# Instrumentation for Prometheus monitoring
+from prometheus_fastapi_instrumentator import Instrumentator
+Instrumentator().instrument(app).expose(app)
+print("Prometheus instrumentator exposed on /metrics endpoint.")
 
 # This is the entry point for AWS Lambda, wrapping the FastAPI app with Mangum.
 handler = Mangum(app)

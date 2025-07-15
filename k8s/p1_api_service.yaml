@@ -3,11 +3,15 @@ apiVersion: v1
 kind: Service
 metadata:
   name: p1-fraud-api-service
+  labels:
+    app: p1-fraud-api
+    release: my-prometheus-stack # This label is used by Prometheus to discover the service 
 spec:
   selector:
     app: p1-fraud-api
   ports:
-    - protocol: TCP
+    - name: http
+      protocol: TCP
       port: 80
       targetPort: 8000
   type: LoadBalancer

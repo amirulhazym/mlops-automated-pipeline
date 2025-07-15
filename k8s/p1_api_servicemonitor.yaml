@@ -1,0 +1,18 @@
+# k8s/p1_api_servicemonitor.yaml
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: p1-fraud-api-servicemonitor
+  labels:
+    # This label tells the Prometheus installed by Helm to pay attention to this.
+    release: my-prometheus-stack
+spec:
+  selector:
+    matchLabels:
+      # This tells the ServiceMonitor which Service to look for.
+      # Must match the labels on p1-fraud-api-service.
+      app: p1-fraud-api
+  endpoints:
+  - port: http # In p1_api_service.yaml, name the port 'http'
+    path: /metrics # The path where metrics are exposed
+    interval: 15s # Scrape every 15 seconds
