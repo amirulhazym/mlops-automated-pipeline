@@ -88,12 +88,22 @@ jobs:
       - name: Setup SAM CLI
         uses: aws-actions/setup-sam@v2
 
-      - name: SAM Build and Deploy P1 API
+      # --- STEP 1: BUILD THE ARTIFACTS (Final Version) ---
+      - name: SAM Build P1 API
+        # --cached flag improves performance on subsequent runs
+        # --build-dir specifies a clear output location
+        run: sam build --use-container --cached --build-dir .aws-sam/build
+
+      # --- STEP 2: DEPLOY THE BUILT ARTIFACTS (Final Version) ---
+      - name: SAM Deploy P1 API
+        # We remove --template-file. SAM will now automatically look
+        # in the default .aws-sam/build location for the built template.
+        # --no-fail-on-empty-changeset is important for CI
         run: |
           sam deploy \
-            --template-file src/p1_api_deployment/template.yaml \
             --stack-name p1-fraud-api-stack-via-gha \
             --capabilities CAPABILITY_IAM \
             --resolve-image-repos \
-            --resolve-s3 \
+            --no-fail-on-empty-changeset \
             --no-confirm-changeset
+
