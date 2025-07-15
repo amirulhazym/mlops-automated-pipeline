@@ -105,3 +105,4 @@ jobs:
             --resolve-image-repos \
             --resolve-s3 \
             --no-confirm-changeset
+            --template .aws-sam/build/template.yaml
