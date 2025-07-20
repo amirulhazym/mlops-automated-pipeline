@@ -15,45 +15,85 @@ The primary goal is to build a robust, reproducible, and automated system for a 
 This diagram illustrates the complete workflow of the MLOps pipeline, from data acquisition to monitoring.
 
 ```mermaid
-flowchart TD
-    subgraph "Phase 1 & 2: Data & Experimentation"
-        A[Hugging Face Dataset] --> B(script: acquire_dataset.py);
-        B -- Generates --> C[Raw Data .csv];
-        C -- Input for --> D(script: preprocess_with_spark.py);
-        D -- Creates --> E[Processed Data .parquet];
-        E -- dvc add --> F{DVC};
-        F -- dvc push --> G[("AWS S3 Remote")];
-        I("script: train_model.py") -- Pulls Data via --> F;
-        I -- Trains --> J1[XGBoost Model] & J2[TensorFlow Model];
-        J1 & J2 -- Logged to --> L{MLflow Tracking Server};
+graph TD
+    subgraph "A. Local Development Environment 💻"
+        direction LR
+        subgraph "1. Data Engineering & Versioning"
+            A[Hugging Face Dataset] --> B(script: acquire_dataset.py);
+            B -- Generates --> C[Raw Data .csv];
+            C --> D(script: preprocess_with_spark.py);
+            D -- Creates --> E[Processed Data .parquet];
+            E -- "dvc add" --> F{DVC};
+            F -- "dvc push" --> G[("AWS S3 Remote")];
+        end
+
+        subgraph "2. Model Experimentation"
+            H("script: train_model.py") -- Uses --> E;
+            H -- Trains --> I1[XGBoost Model];
+            H -- Trains --> I2[TensorFlow Model];
+            I1 & I2 -- "mlflow.log_model()" --> J[("MLflow Tracking Server")];
+            H -- "mlflow.log_params/metrics()" --> J;
+        end
+
+        subgraph "3. Source Code & Configuration"
+            K1[Python Scripts <br> /src, /scripts];
+            K2[DVC Metafile <br> .dvc];
+            F -- Creates --> K2;
+            K3[Dockerfiles];
+            K4[Kubernetes Manifests <br> /k8s];
+            K5[CI/CD Workflow <br> .github/workflows];
+        end
     end
 
-    subgraph "Phase 3, 4 & 5: CI/CD, Deployment & Monitoring"
-        K[GitHub Repository] -- on push --> M{GitHub Actions CI/CD};
-        M -- Runs Job --> N1(Lint: flake8) & N2(Test: pytest);
-        N1 & N2 --> O(Build Training Docker Image);
-        O -- On Success --> P(Job: Deploy P1 API);
-        P -- Uses --> Q[AWS SAM];
-        Q -- Deploys to --> R[("AWS Lambda & API Gateway")];
+    "A. Local Development Environment 💻" -- "git commit & push" --> L{GitHub Repository 🐙};
 
-        T[P1 API Dockerfile] -- docker build --> U((p1-fraud-api Image));
-        U -- minikube image load --> V{Kubernetes (Minikube)};
-        W[k8s Manifests .yaml] -- kubectl apply --> V;
-
-        X[Kafka Producer] -- Sends Events --> Y[("Kafka Topic")];
-        Y -- Streams to --> Z[Kafka Consumer];
-        Z -- Calls API --> V;
-        V -- Exposes /metrics --> AA(Prometheus);
-        AA -- Data Source for --> BB[/Grafana Dashboard/];
-        CC[Evidently AI] -- Generates --> DD[Drift & Perf. Report];
+    subgraph "B. CI/CD Automation Pipeline (GitHub Actions) 🚀"
+        L -- "Triggers Workflow <br> on push to main" --> M;
+        subgraph "CI: Quality Gates"
+            M(1. Lint & Test) -- "on success" --> N(2. Build Training Docker Image);
+        end
+        subgraph "CD: Automated Deployment"
+            N -- "on success" --> O(3. Deploy P1 API to AWS);
+        end
     end
 
+    subgraph "C. Deployment Targets ☁️"
+        subgraph "Serverless (Deployed by CD)"
+            P[("AWS Lambda & API Gateway")];
+        end
+        subgraph "Container Orchestration (Deployed Manually)"
+            Q{Kubernetes Cluster <br> (Minikube)};
+            R[P1 API Docker Image] -- "minikube image load" --> Q;
+            K4 -- "kubectl apply" --> Q;
+        end
+    end
+
+    O -- "via AWS SAM" --> P;
+
+    subgraph "D. Monitoring & Observability 📊"
+        subgraph "Application Performance Monitoring (APM)"
+            Q -- "Exposes /metrics" --> S(Prometheus);
+            S -- "Data Source for" --> T[/Grafana Dashboard/];
+        end
+        subgraph "ML Model Quality Monitoring"
+            U(Evidently AI Script) -- Uses --> E & J;
+            U -- Generates --> V[Data Drift & Performance Reports];
+        end
+        subgraph "Real-Time POC"
+            W(Kafka Producer) -- "Sends Events" --> X[("Kafka Topic")];
+            X -- "Streams to" --> Y(Kafka Consumer);
+            Y -- "Calls API on" --> Q;
+        end
+    end
+
+    %% Styling
     style G fill:#FF9900,stroke:#333,stroke-width:2px
-    style L fill:#C8E6C9,stroke:#333,stroke-width:2px
-    style R fill:#FF9900,stroke:#333,stroke-width:2px
-    style V fill:#326CE5,stroke:#333,stroke-width:2px,color:#fff
-    style Y fill:#FFF9C4,stroke:#333,stroke-width:2px
-    style BB fill:#E6522C,color:#fff
+    style J fill:#C8E6C9,stroke:#333,stroke-width:2px
+    style L fill:#181717,color:#fff,stroke-width:2px,stroke:#555
+    style P fill:#FF9900,stroke:#333,stroke-width:2px
+    style Q fill:#326CE5,stroke:#333,stroke-width:2px,color:#fff
+    style X fill:#FFF9C4,stroke:#333,stroke-width:2px
+    style T fill:#E6522C,color:#fff
 ```
 
 ## ⭐ Core Features
