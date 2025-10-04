@@ -2,7 +2,7 @@
 
 # --- Stage 1: Base Image and System Dependencies ---
 # Using python:3.11-slim as it's a good balance of size and features.
-FROM python:3.11-slim
+FROM python:3.11-slim-bookworm
 
 # Set environment variables for non-interactive installs and to ensure Python outputs logs immediately.
 ENV PYTHONUNBUFFERED=1 \
