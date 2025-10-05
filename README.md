@@ -10,6 +10,18 @@ This repository documents the construction of a comprehensive, production-style 
 
 The primary goal was to build a robust, reproducible, and automated system for a real-world fraud detection use case, leveraging a stack of industry-standard, open-source tools and cloud services, with a strong emphasis on professional engineering practices and a zero-cost mandate.
 
+**Project Status:** Completed ✅
+
+## 🖼️ Visual Showcase
+
+| MLflow Experiment Comparison | Live Grafana Dashboard (APM) | Automated CI/CD Pipeline |
+| :---: | :---: | :---: |
+| ![MLflow Comparison](https://framerusercontent.com/images/04NkO57EXbbd1ISI8BeSWRwCWw.png?width=1086&height=695) | ![Grafana Dashboard](https://framerusercontent.com/images/kiO00MNXHkFSn5Sb0ecMSGGQ.png?width=1562&height=343) | ![GitHub Actions](images/gha_cicd.png) |
+
+| Data Drift Report (Evidently AI) | Kafka Real-Time POC | Kubernetes Deployment |
+| :---: | :---: | :---: |
+| ![Evidently Report](https://framerusercontent.com/images/8CoW1MNFDS9il2VhctReEuGqzU.png?width=1429&height=846) | ![Kafka POC](images/kafka_ui.png) | ![K8s Pods](images/k8s_get_pods.png) |
+
 ## 🏗️ System Architecture
 
 This diagram illustrates the complete, multi-stage workflow of the MLOps pipeline, from local development to automated deployment and real-time monitoring.
@@ -29,6 +41,15 @@ This diagram illustrates the complete, multi-stage workflow of the MLOps pipelin
 - **Multi-Faceted Monitoring Stack**:
   - **ML Quality Monitoring**: Evidently AI generates data drift and model performance reports.
   - **Application Performance Monitoring (APM)**: A live stack using Prometheus for metrics collection and Grafana for real-time visualization of API latency and request rates.
+ 
+## 🏆 Final Model Performance
+
+After a rigorous experimentation and comparison process tracked in MLflow, the **XGBoost model** was selected as the champion for this use case. The final evaluation metrics on the held-out test set (from the full 6.3M row dataset) are:
+
+| Model | F1-Score | Training Time (CPU) | Justification for Selection |
+| :--- | :---: | :---: | :--- |
+| **XGBoost** | **0.888** | **~20 seconds** | **Selected.** Achieved a significantly higher F1-score, which is the critical business metric for balancing precision and recall in fraud detection. The extremely fast training time also makes it more practical for rapid iteration and retraining. |
+| **TensorFlow MLP** | 0.837 | ~4.5 minutes | **Not Selected.** While achieving a near-perfect ROC AUC of 1.0, its lower F1-score and substantially higher computational cost made it the less optimal choice for this specific production scenario. |
 
 ## 🛠️ Technology Stack
 
@@ -46,6 +67,7 @@ mlops-automated-pipeline/
 ├── .github/workflows/          # GitHub Actions CI/CD pipeline (ci_pipeline.yml)
 ├── data/                       # Managed by scripts and DVC (.gitignore'd)
 ├── docs/                       # Project documentation and monitoring reports
+├── images/                     # Visual collection for the "output" for this project
 ├── k8s/                        # Kubernetes manifest files (deployment.yaml, service.yaml, etc.)
 ├── mlruns/                     # Local MLflow experiment data (.gitignore'd)
 ├── notebooks/                  # Jupyter notebooks for EDA and experimentation
